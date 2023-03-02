@@ -17,6 +17,17 @@ class Mutex {
     // Your code goes here
   }
 
+  // BasicLockable
+  // https://en.cppreference.com/w/cpp/named_req/BasicLockable
+
+  void lock() {  // NOLINT
+    Lock();
+  }
+
+  void unlock() {  // NOLINT
+    Unlock();
+  }
+
  private:
   // ???
 };
