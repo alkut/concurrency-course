@@ -19,7 +19,7 @@ TEST_SUITE(Mutex) {
 
     for (size_t i = 0; i < threads; ++i) {
       race.Add([&]() {
-        while (twist::test::KeepRunning()) {
+        for (twist::test::TimeBudget budget; budget.Withdraw(); ) {
           mutex.Lock();
           {
             // Critical section
