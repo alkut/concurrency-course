@@ -161,9 +161,9 @@ TEST_SUITE(ThreadPool) {
     pool.Start();
 
     for (size_t i = 0; i < 3; ++i) {
-      pool.Submit([]() {
+      pool.Submit([&pool]() {
         std::this_thread::sleep_for(1s);
-        tp::ThreadPool::Current()->Submit([] {
+        pool.Submit([] {
           std::this_thread::sleep_for(100s);
         });
       });
