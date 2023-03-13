@@ -3,9 +3,13 @@
 #include <twist/test/with/wheels/stress.hpp>
 
 #include <twist/test/race.hpp>
+#include <twist/test/random.hpp>
 
-void StressTest(size_t workers, size_t waiters) {
+void StressTest() {
   WaitGroup wg;
+
+  size_t workers = 1 + twist::test::Random(4);
+  size_t waiters = 1 + twist::test::Random(4);
 
   std::atomic<size_t> work{0};
 
@@ -31,20 +35,8 @@ void StressTest(size_t workers, size_t waiters) {
 }
 
 TEST_SUITE(WaitGroup) {
-  TWIST_TEST_REPEAT(Run_1_1, 5s) {
-    StressTest(1, 1);
-  }
-
-  TWIST_TEST_REPEAT(Run_2_2, 5s) {
-    StressTest(2, 2);
-  }
-
-  TWIST_TEST_REPEAT(Run_3_2, 5s) {
-    StressTest(3, 2);
-  }
-
-  TWIST_TEST_REPEAT(Run_4_4, 5s) {
-    StressTest(4, 4);
+  TWIST_TEST_REPEAT(Stress, 5s) {
+    StressTest();
   }
 }
 
