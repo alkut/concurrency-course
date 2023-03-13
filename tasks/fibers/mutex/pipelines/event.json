@@ -4,7 +4,10 @@
       "targets": [
         "fibers_event_unit_tests"
       ],
-      "profiles": ["DebugASan"]
+      "profiles": [
+        "Debug",
+        "DebugASan"
+      ]
     },
     {
       "targets": [

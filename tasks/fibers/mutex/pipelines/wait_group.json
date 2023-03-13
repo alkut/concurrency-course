@@ -4,7 +4,10 @@
       "targets": [
         "fibers_wg_unit_tests"
       ],
-      "profiles": ["DebugASan"]
+      "profiles": [
+        "Debug",
+        "DebugASan"
+      ]
     },
     {
       "targets": [

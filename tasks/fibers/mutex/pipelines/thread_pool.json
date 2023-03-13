@@ -3,6 +3,7 @@
     {
       "targets": ["tp_unit_tests"],
       "profiles": [
+        "Debug",
         "DebugASan"
       ]
     },
