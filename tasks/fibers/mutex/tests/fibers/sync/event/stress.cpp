@@ -7,7 +7,7 @@
 
 #include <exe/fibers/sync/event.hpp>
 
-#include <twist/test/budget.hpp>
+#include <twist/test/repeat.hpp>
 
 using namespace exe;
 
@@ -17,8 +17,8 @@ void StressTest() {
   executors::ThreadPool scheduler{5};
   scheduler.Start();
 
-  for (size_t iter = 0; twist::test::KeepRunning(); ++iter) {
-    size_t waiters = 1 + iter % 4;
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
+    size_t waiters = 1 + repeat.Iter() % 4;
 
     fibers::Event event;
     bool work = false;

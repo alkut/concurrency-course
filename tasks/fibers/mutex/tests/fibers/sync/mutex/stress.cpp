@@ -1,8 +1,7 @@
 #include <twist/test/with/wheels/stress.hpp>
-#include <twist/test/budget.hpp>
 
-#include <twist/test/with/wheels/stress.hpp>
 #include <twist/test/plate.hpp>
+#include <twist/test/repeat.hpp>
 
 #include <exe/executors/thread_pool.hpp>
 #include <exe/fibers/sched/go.hpp>
@@ -25,7 +24,7 @@ void StressTest1(size_t fibers) {
 
   for (size_t i = 0; i < fibers; ++i) {
     fibers::Go(scheduler, [&] {
-      while (twist::test::KeepRunning()) {
+      for (twist::test::TimeBudget budget; budget.Withdraw(); ) {
         mutex.Lock();
         plate.Access();
         mutex.Unlock();
@@ -46,8 +45,8 @@ void StressTest2() {
   executors::ThreadPool scheduler{4};
   scheduler.Start();
 
-  for (size_t iter = 0; twist::test::KeepRunning(); ++iter) {
-    size_t fibers = 2 + iter % 5;
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
+    size_t fibers = 2 + repeat.Iter() % 5;
 
     fibers::Mutex mutex;
     std::atomic<size_t> cs{0};
