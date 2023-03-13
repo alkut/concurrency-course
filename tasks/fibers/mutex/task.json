@@ -3,6 +3,7 @@
     {
       "targets": ["tp_unit_tests"],
       "profiles": [
+        "Debug",
         "DebugASan"
       ]
     },
@@ -39,9 +40,31 @@
     },
     {
       "targets": [
+        "fibers_event_unit_tests"
+      ],
+      "profiles": [
+        "Debug",
+        "DebugASan"
+      ]
+    },
+    {
+      "targets": [
+        "fibers_event_stress_tests"
+      ],
+      "profiles": [
+        "FaultyFibers",
+        "FaultyThreadsASan",
+        "FaultyThreadsTSan"
+      ]
+    },
+    {
+      "targets": [
         "fibers_mutex_unit_tests"
       ],
-      "profiles": ["DebugASan"]
+      "profiles": [
+        "Debug",
+        "DebugASan"
+      ]
     },
     {
       "targets": [
@@ -57,7 +80,10 @@
       "targets": [
         "fibers_wg_unit_tests"
       ],
-      "profiles": ["DebugASan"]
+      "profiles": [
+        "Debug",
+        "DebugASan"
+      ]
     },
     {
       "targets": [
