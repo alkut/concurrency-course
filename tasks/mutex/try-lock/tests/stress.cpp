@@ -145,7 +145,7 @@ namespace forks {
     }
 
     void ReleaseForks() {
-      if (twist::test::RandomUInteger(1) == 0) {
+      if (twist::test::Random2()) {
         ReleaseForks(left_fork_, right_fork_);
       } else {
         ReleaseForks(right_fork_, left_fork_);
