@@ -2,7 +2,7 @@
 
 #include <twist/test/with/wheels/stress.hpp>
 
-#include <twist/fault/adversary/adversary.hpp>
+#include <twist/rt/layer/fault/adversary/adversary.hpp>
 
 #include <twist/test/race.hpp>
 #include <twist/test/lockfree.hpp>
@@ -77,7 +77,7 @@ struct TestObject: public Counted<TestObject> {
   static TestObject Make() {
     static const size_t kValueRange = 1000007;
 
-    return TestObject{twist::test::RandomUInteger(kValueRange)};
+    return TestObject{twist::test::Random(kValueRange)};
   }
 };
 
@@ -99,7 +99,7 @@ void StressTest(size_t threads, size_t batch_size_limit) {
       twist::test::EnablePark guard;
 
       while (twist::test::KeepRunning()) {
-        size_t batch_size = twist::test::RandomUInteger(1, batch_size_limit);
+        size_t batch_size = twist::test::Random(1, batch_size_limit);
 
         // Push
 
