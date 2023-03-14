@@ -53,3 +53,33 @@
   tasks:
     - task: tasks/thread-pool
       score: 400
+
+- group:    WaitGroup
+  start:    14-03-2023 15:00
+  deadline: 20-03-2023 23:59
+  tasks:
+    - task: cond/wait_group
+      score: 50
+
+- group:    Fibers / Part I
+  start:    14-03-2023 15:00
+  deadline: 20-03-2023 23:59
+  tasks:
+    - task: fibers/coro
+      score: 200
+
+- group:    Fibers / Part II
+  start:    14-03-2023 15:00
+  deadline: 27-03-2023 23:59
+  tasks:
+    - task: fibers/yield
+      score: 200
+    - task: fibers/sleep_for
+      score: 300
+
+- group:    Fibers / Part III
+  start:    14-03-2023 15:00
+  deadline: 10-04-2023 23:59
+  tasks:
+    - task: fibers/mutex
+      score: 500
