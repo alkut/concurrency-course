@@ -66,7 +66,7 @@ project_log("FetchContent: twist")
 FetchContent_Declare(
         twist
         GIT_REPOSITORY https://gitlab.com/Lipovsky/twist.git
-        GIT_TAG 3155d4845c0bf0a555bcfc0cefc06aa8f0bc28c3
+        GIT_TAG 3295ef696c934f282f2a8256ceb7702a18856bd3
 )
 FetchContent_MakeAvailable(twist)
 
