@@ -12,17 +12,17 @@ using namespace std::chrono_literals;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-TEST_SUITE(Mutex) {
+TEST_SUITE(MutualExclusion) {
   void Test(size_t threads) {
-    twist::test::Plate plate;  // Guarded by mutex
     QueueSpinLock spinlock;
+    twist::test::Plate plate;  // Guarded by spinlock
 
     twist::test::Race race;
 
     for (size_t i = 0; i < threads; ++i) {
-      race.Add([&]() {
-        while (twist::test::KeepRunning()) {
-          QueueSpinLock::Guard guard(spinlock);
+      race.Add([&] {
+        for (twist::test::TimeBudget budget; budget.Withdraw(); ) {
+          QueueSpinLock::Guard guard{spinlock};
           {
             // Critical section
             plate.Access();
@@ -36,11 +36,11 @@ TEST_SUITE(Mutex) {
     std::cout << "Critical sections: " << plate.AccessCount() << std::endl;
   }
 
-  TWIST_TEST(Stress1, 5s) {
+  TWIST_TEST(Stress2, 5s) {
     Test(2);
   }
 
-  TWIST_TEST(Stress2, 5s) {
+  TWIST_TEST(Stress5, 5s) {
     Test(5);
   }
 }
@@ -54,7 +54,7 @@ TEST_SUITE(MissedWakeup) {
     twist::test::Race race;
 
     for (size_t i = 0; i < threads; ++i) {
-      race.Add([&]() {
+      race.Add([&] {
         QueueSpinLock::Guard guard(spinlock);
         // Critical section
       });
@@ -63,11 +63,11 @@ TEST_SUITE(MissedWakeup) {
     race.Run();
   }
 
-  TWIST_TEST_REPEAT(Stress1, 5s) {
+  TWIST_TEST_REPEAT(Stress2, 5s) {
     Test(2);
   }
 
-  TWIST_TEST_REPEAT(Stress2, 5s) {
+  TWIST_TEST_REPEAT(Stress3, 5s) {
     Test(3);
   }
 }

@@ -12,7 +12,7 @@
  *
  * {
  *   QueueSpinLock::Guard guard(spinlock);  // <-- Acquire
- *   // Critical section
+ *   // <-- Critical section
  * }  // <-- Release
  *
  */
@@ -23,16 +23,16 @@ class QueueSpinLock {
     friend class QueueSpinLock;
 
    public:
-    explicit Guard(QueueSpinLock& spinlock) : spinlock_(spinlock) {
-      spinlock_.Acquire(this);
+    explicit Guard(QueueSpinLock& host) : host_(host) {
+      host_.Acquire(this);
     }
 
     ~Guard() {
-      spinlock_.Release(this);
+      host_.Release(this);
     }
 
    private:
-    QueueSpinLock& spinlock_;
+    QueueSpinLock& host_;
     // ???
   };
 

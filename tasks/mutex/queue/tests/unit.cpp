@@ -31,17 +31,17 @@ TEST_SUITE(QueueSpinLock) {
 
   SIMPLE_TEST(ConcurrentIncrements) {
     QueueSpinLock spinlock;
-    size_t shared_counter = 0;
+    size_t counter = 0;
 
     const size_t kIncrementsPerThread = 1000;
 
-    auto contender = [&]() {
+    auto contender = [&] {
       for (size_t i = 0; i < kIncrementsPerThread; ++i) {
         QueueSpinLock::Guard guard(spinlock);
 
-        size_t current = shared_counter;
+        size_t current = counter;
         std::this_thread::yield();
-        shared_counter = current + 1;
+        counter = current + 1;
       }
     };
 
@@ -50,9 +50,9 @@ TEST_SUITE(QueueSpinLock) {
     t1.join();
     t2.join();
 
-    std::cout << "Shared counter value: " << shared_counter << std::endl;
+    std::cout << "Shared counter value: " << counter << std::endl;
 
-    ASSERT_EQ(shared_counter, 2 * kIncrementsPerThread);
+    ASSERT_EQ(counter, 2 * kIncrementsPerThread);
   }
 }
 
