@@ -23,7 +23,8 @@ class QueueSpinLock {
     friend class QueueSpinLock;
 
    public:
-    explicit Guard(QueueSpinLock& host) : host_(host) {
+    explicit Guard(QueueSpinLock& host)
+        : host_(host) {
       host_.Acquire(this);
     }
 
@@ -37,7 +38,7 @@ class QueueSpinLock {
   };
 
  private:
-  void Acquire(Guard* /*guard*/) {
+  void Acquire(Guard* /*waiter*/) {
     // Your code goes here
   }
 
