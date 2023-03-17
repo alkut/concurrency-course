@@ -68,3 +68,10 @@
       score: 300
     - task: fibers/mutex
       score: 500
+
+- group:    Cache Coherency
+  start:    01-01-2021 12:00
+  deadline: 01-01-2031 23:59
+  tasks:
+    - task: mutex/queue
+      score: 150
