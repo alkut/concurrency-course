@@ -5,7 +5,8 @@
 - [fibers/yield](/tasks/fibers/coroutine)
 - [fibers/sleep_for](/tasks/fibers/sleep_for)
 - [cond/condvar](/tasks/cond/condvar)
-- [cond/wait_group](tasks/cond/wait_group)
+- [cond/wait_group](/tasks/cond/wait_group)
+- [mutex/queue](/tasks/mutex/queue)
 - [tasks/executors](/tasks/tasks/executors) + интрузивность – рекомендуется
 
 ---
