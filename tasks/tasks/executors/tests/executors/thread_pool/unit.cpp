@@ -10,9 +10,9 @@
 #include <chrono>
 #include <thread>
 
-using namespace std::chrono_literals;
-
 using namespace exe;
+
+using namespace std::chrono_literals;
 
 TEST_SUITE(ThreadPool) {
   SIMPLE_TEST(JustWorks) {

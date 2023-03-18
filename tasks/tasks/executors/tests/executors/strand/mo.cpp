@@ -8,7 +8,7 @@
 
 #include <thread>
 
-using namespace exe::executors;
+using namespace exe;
 using namespace std::chrono_literals;
 
 /////////////////////////////////////////////////////////////////////
@@ -31,23 +31,23 @@ class OnePassBarrier {
 };
 
 void MaybeAnomaly() {
-  ThreadPool pool{1};
+  executors::ThreadPool pool{1};
   pool.Start();
 
   for (twist::test::Repeat repeat; repeat.Test(); ) {
-    Strand strand{pool};
+    executors::Strand strand{pool};
     OnePassBarrier barrier{2};
 
     size_t done = 0;
 
-    Submit(strand, [&done, &barrier] {
+    executors::Submit(strand, [&done, &barrier] {
       ++done;
       barrier.Pass();
     });
 
     barrier.Pass();
 
-    Submit(strand, [&done] {
+    executors::Submit(strand, [&done] {
       ++done;
     });
 
