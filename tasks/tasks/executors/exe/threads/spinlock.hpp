@@ -18,7 +18,7 @@ class SpinLock {
     // Not implemented
   }
 
-  // BasicLockable
+  // Lockable
 
   void lock() {  // NOLINT
     Lock();
