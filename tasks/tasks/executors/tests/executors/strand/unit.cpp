@@ -176,7 +176,6 @@ TEST_SUITE(Strand) {
       executors::Submit(clients, [&] {
         executors::Submit(strand, [&] {
           AssertRunningOn(workers);
-          std::cout << "Done" << std::endl;
           ++task_count;
         });
       });
