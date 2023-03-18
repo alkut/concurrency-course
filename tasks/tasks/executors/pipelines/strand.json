@@ -9,8 +9,8 @@
     {
       "targets": ["strand_stress_tests"],
       "profiles": [
-        "Debug",
         "FaultyFibers",
+        "Debug",
         "FaultyThreadsASan",
         "FaultyThreadsTSan"
       ]
