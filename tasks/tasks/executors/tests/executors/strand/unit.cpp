@@ -17,7 +17,7 @@ void AssertRunningOn(executors::ThreadPool& pool) {
   ASSERT_TRUE(executors::ThreadPool::Current() == &pool);
 }
 
-TEST_SUITE(executors::Strand) {
+TEST_SUITE(Strand) {
   SIMPLE_TEST(JustWorks) {
     executors::ThreadPool pool{4};
     pool.Start();
