@@ -3,8 +3,6 @@
 #include <array>
 #include <span>
 
-namespace lockfree {
-
 // Single-Producer / Multi-Consumer Bounded Ring Buffer
 
 template <typename T, size_t Capacity>
@@ -31,5 +29,3 @@ class WorkStealingQueue {
  private:
   std::array<Slot, Capacity> buffer_;
 };
-
-}  // namespace lockfree

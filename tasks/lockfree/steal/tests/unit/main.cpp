@@ -2,8 +2,6 @@
 
 #include <wheels/test/framework.hpp>
 
-using lockfree::WorkStealingQueue;
-
 //////////////////////////////////////////////////////////////////////
 
 struct TestObject {

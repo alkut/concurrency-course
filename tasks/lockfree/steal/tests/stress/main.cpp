@@ -1,6 +1,6 @@
 #include "../../work_stealing_queue.hpp"
 
-#include <twist/rt/fault/adversary/lockfree.hpp>
+#include <twist/rt/layer/fault/adversary/lockfree.hpp>
 
 #include <twist/test/with/wheels/stress.hpp>
 #include <twist/test/race.hpp>
@@ -55,7 +55,7 @@ template <size_t Queues, size_t Capacity>
 void StressTest() {
   SetupAdversary();
 
-  std::array<twist::test::ReportProgressFor<lockfree::WorkStealingQueue<TestObject, Capacity>>, Queues> queues_;
+  std::array<twist::test::ReportProgressFor<WorkStealingQueue<TestObject, Capacity>>, Queues> queues_;
 
   // Checksums
   std::atomic<size_t> produced_cs{0};
