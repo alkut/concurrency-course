@@ -52,7 +52,7 @@
     - task: futures/std
       score: 200
 
-- group:    Tasks / Thread Pool
+- group:    Tasks / Part I
   start:    25-02-2023 12:00
   deadline: 13-03-2023 23:59
   tasks:
@@ -88,3 +88,17 @@
   tasks:
     - task: fibers/mutex
       score: 500
+
+- group:    Cache Coherency
+  start:    18-03-2023 15:00
+  deadline: 27-03-2023 23:59
+  tasks:
+    - task: mutex/queue
+      score: 200
+
+- group:    Tasks / Part II
+  start:    18-03-2023 15:00
+  deadline: 10-04-2023 23:59
+  tasks:
+    - task: tasks/executors
+      score: 400

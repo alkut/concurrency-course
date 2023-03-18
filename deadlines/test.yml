@@ -49,7 +49,7 @@
     - task: futures/std
       score: 200
 
-- group:    Tasks / Thread Pool
+- group:    Tasks / Part I
   start:    01-01-2021 12:00
   deadline: 01-01-2031 23:59
   tasks:
@@ -76,7 +76,7 @@
     - task: mutex/queue
       score: 150
 
-- group:    Tasks / Executors
+- group:    Tasks / Part II
   start:    01-01-2021 12:00
   deadline: 01-01-2031 23:59
   tasks:
