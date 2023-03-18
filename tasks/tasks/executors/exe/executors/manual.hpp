@@ -34,15 +34,19 @@ class ManualExecutor : public IExecutor {
 
   // Run tasks until queue is empty
   // Returns number of completed tasks
-  // Post-condition: HasTasks() == false
+  // Post-condition: IsEmpty() == true
   size_t Drain();
 
   size_t TaskCount() const {
     return 0;  // Not implemented
   }
 
+  bool IsEmpty() const {
+    return true;  // Not implemented
+  }
+
   bool NonEmpty() const {
-    return false;  // Not implemented
+    return !IsEmpty();
   }
 
  private:
