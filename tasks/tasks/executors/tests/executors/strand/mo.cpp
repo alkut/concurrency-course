@@ -4,7 +4,7 @@
 
 #include <twist/test/with/wheels/stress.hpp>
 
-#include <twist/test/budget.hpp>
+#include <twist/test/repeat.hpp>
 
 #include <thread>
 
@@ -33,8 +33,8 @@ class OnePassBarrier {
 void MaybeAnomaly() {
   ThreadPool pool{1};
 
-  while (twist::test::KeepRunning()) {
-    Strand strand(pool);
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
+    Strand strand{pool};
     OnePassBarrier barrier{2};
 
     size_t done = 0;
@@ -60,8 +60,8 @@ void MaybeAnomaly() {
 
 //////////////////////////////////////////////////////////////////////
 
-TEST_SUITE(MemoryOrders) {
-  TWIST_TEST(MaybeAnomaly, 5s) {
+TEST_SUITE(Strand) {
+  TWIST_TEST(MemoryOrder, 5s) {
     MaybeAnomaly();
   }
 }

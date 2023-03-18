@@ -1,31 +1,31 @@
 #include <exe/executors/manual.hpp>
-#include <exe/executors/execute.hpp>
+#include <exe/executors/submit.hpp>
 
 #include <wheels/test/framework.hpp>
 
-using namespace exe::executors;
+using namespace exe;
 
 TEST_SUITE(Manual) {
   SIMPLE_TEST(JustWorks) {
-    ManualExecutor manual;
+    executors::ManualExecutor manual;
 
     size_t step = 0;
 
-    ASSERT_FALSE(manual.HasTasks());
+    ASSERT_FALSE(manual.NonEmpty());
 
     ASSERT_FALSE(manual.RunNext());
     ASSERT_EQ(manual.RunAtMost(99), 0);
 
-    Execute(manual, [&]() {
+    executors::Submit(manual, [&] {
       step = 1;
     });
 
-    ASSERT_TRUE(manual.HasTasks());
+    ASSERT_TRUE(manual.NonEmpty());
     ASSERT_EQ(manual.TaskCount(), 1);
 
     ASSERT_EQ(step, 0);
 
-    Execute(manual, [&]() {
+    executors::Submit(manual, [&] {
       step = 2;
     });
 
@@ -37,10 +37,10 @@ TEST_SUITE(Manual) {
 
     ASSERT_EQ(step, 1);
 
-    ASSERT_TRUE(manual.HasTasks());
+    ASSERT_TRUE(manual.NonEmpty());
     ASSERT_EQ(manual.TaskCount(), 1);
 
-    Execute(manual, [&]() {
+    executors::Submit(manual, [&] {
       step = 3;
     });
 
@@ -49,55 +49,59 @@ TEST_SUITE(Manual) {
     ASSERT_EQ(manual.RunAtMost(99), 2);
     ASSERT_EQ(step, 3);
 
-    ASSERT_FALSE(manual.HasTasks());
+    ASSERT_FALSE(manual.NonEmpty());
     ASSERT_FALSE(manual.RunNext());
   }
 
   class Looper {
    public:
-    explicit Looper(IExecutor& e, size_t iters)
-    : executor_(e), iters_left_(iters) {
+    explicit Looper(executors::IExecutor& e, size_t iters)
+        : executor_(e),
+          iters_left_(iters) {
+    }
+
+    void Start() {
+      Submit();
     }
 
     void Iter() {
       --iters_left_;
       if (iters_left_ > 0) {
-        Execute(executor_, [this]() {
-          Iter();
-        });
+        Submit();
       }
     }
 
    private:
-    IExecutor& executor_;
+    void Submit() {
+      executors::Submit(executor_, [this] {
+        Iter();
+      });
+    }
+
+   private:
+    executors::IExecutor& executor_;
     size_t iters_left_;
   };
 
   SIMPLE_TEST(RunAtMost) {
-    ManualExecutor manual;
+    executors::ManualExecutor manual;
 
     Looper looper{manual, 256};
-
-    Execute(manual, [&looper]() {
-      looper.Iter();
-    });
+    looper.Start();
 
     size_t tasks = 0;
     do {
       tasks += manual.RunAtMost(7);
-    } while (manual.HasTasks());
+    } while (manual.NonEmpty());
 
     ASSERT_EQ(tasks, 256);
   }
 
   SIMPLE_TEST(Drain) {
-    ManualExecutor manual;
+    executors::ManualExecutor manual;
 
     Looper looper{manual, 117};
-
-    Execute(manual, [&looper]() {
-      looper.Iter();
-    });
+    looper.Start();
 
     ASSERT_EQ(manual.Drain(), 117);
   }

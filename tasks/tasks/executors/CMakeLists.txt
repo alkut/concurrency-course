@@ -9,16 +9,16 @@ add_task_playground(play)
 # Tests
 
 # Thread Pool
-add_task_test_dir(tests/executors/thread_pool/unit thread_pool_unit_tests)
-add_task_test_dir(tests/executors/thread_pool/stress thread_pool_stress_tests)
+add_task_test(tp_unit_tests tests/executors/thread_pool/unit.cpp)
+add_task_test(tp_stress_tests tests/executors/thread_pool/stress.cpp)
 
 # Manual
-add_task_test_dir(tests/executors/manual/unit manual_unit_tests)
+add_task_test(manual_unit_tests tests/executors/manual/unit.cpp)
 
 # Strand
-add_task_test_dir(tests/executors/strand/unit strand_unit_tests)
-add_task_test_dir(tests/executors/strand/stress strand_stress_tests)
-add_task_test_dir(tests/executors/strand/lifetime strand_lifetime_tests)
-add_task_test_dir(tests/executors/strand/mo strand_mo_tests)
+add_task_test(strand_unit_tests tests/executors/strand/unit.cpp)
+add_task_test(strand_stress_tests tests/executors/strand/stress.cpp)
+add_task_test(strand_mo_tests tests/executors/strand/mo.cpp)
+add_task_test(strand_lifetime_tests tests/executors/strand/lifetime.cpp)
 
 end_task()

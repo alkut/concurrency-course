@@ -70,7 +70,7 @@ TEST_SUITE(Strand) {
     static const size_t kIncrements = 1234;
 
     for (size_t i = 0; i < kIncrements; ++i) {
-      Submit(strand, [&]() {
+      Submit(strand, [&] {
         AssertRunningOn(pool);
         ++counter;
       });

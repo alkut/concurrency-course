@@ -1,32 +1,31 @@
 #include <exe/executors/thread_pool.hpp>
 #include <exe/executors/strand.hpp>
-#include <exe/executors/execute.hpp>
+#include <exe/executors/submit.hpp>
 
 #include <twist/test/with/wheels/stress.hpp>
 
-#include <wheels/test/framework.hpp>
-#include <twist/test/budget.hpp>
+#include <twist/test/repeat.hpp>
 
-#include <deque>
+#include <list>
 
-using namespace exe::executors;
+using namespace exe;
 using namespace std::chrono_literals;
 
 /////////////////////////////////////////////////////////////////////
 
 class Robot {
  public:
-  explicit Robot(IExecutor& e)
-  : strand_(e) {
+  explicit Robot(executors::IExecutor& executor)
+      : strand_(executor) {
   }
 
-  void Cmd() {
-    Execute(strand_, [this]() {
+  void Push() {
+    executors::Submit(strand_, [this]() {
       Step();
     });
   }
 
-  size_t Steps() const {
+  size_t StepCount() const {
     return steps_;
   }
 
@@ -36,61 +35,61 @@ class Robot {
   }
 
  private:
-  Strand strand_;
+  executors::Strand strand_;
   size_t steps_{0};
 };
 
-void Robots(size_t strands, size_t load) {
-  ThreadPool pool{4};
+void Robots(size_t strands, size_t pushes) {
+  executors::ThreadPool workers{4};
+  workers.Start();
 
-  std::deque<Robot> robots;
+  std::list<Robot> robots;
   for (size_t i = 0; i < strands; ++i) {
-    robots.emplace_back(pool);
+    robots.emplace_back(workers);
   }
 
-  ThreadPool clients{strands};
+  executors::ThreadPool clients{strands};
+  clients.Start();
 
-  size_t iters = 0;
+  twist::test::Repeat repeat;
 
-  while (twist::test::KeepRunning()) {
-    ++iters;
-
+  while (repeat.Test()) {
     for (auto& robot : robots) {
-      Execute(clients, [&robot, load]() {
-        for (size_t j = 0; j < load; ++j) {
-          robot.Cmd();
+      Submit(clients, [&robot, pushes]() {
+        for (size_t j = 0; j < pushes; ++j) {
+          robot.Push();
         }
       });
     }
 
     clients.WaitIdle();
-    pool.WaitIdle();
+    workers.WaitIdle();
   }
 
   for (auto& robot : robots) {
-    ASSERT_EQ(robot.Steps(), iters * load);
+    ASSERT_EQ(robot.StepCount(), repeat.Iter() * pushes);
   }
 
-  pool.Stop();
   clients.Stop();
+  workers.Stop();
 }
 
 //////////////////////////////////////////////////////////////////////
 
 void MissingTasks() {
-  ThreadPool pool{4};
+  executors::ThreadPool pool{4};
 
   size_t iter = 0;
 
-  while (twist::test::KeepRunning()) {
-    Strand strand(pool);
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
+    executors::Strand strand(pool);
 
     size_t todo = 2 + (iter++) % 5;
 
     size_t done = 0;
 
     for (size_t i = 0; i < todo; ++i) {
-      Execute(strand, [&done]() {
+      executors::Submit(strand, [&done]() {
         ++done;
       });
     }

@@ -1,43 +1,37 @@
 #include <exe/executors/thread_pool.hpp>
-#include <exe/executors/execute.hpp>
-
-#include <wheels/test/framework.hpp>
-#include <twist/test/budget.hpp>
+#include <exe/executors/submit.hpp>
 
 #include <twist/test/with/wheels/stress.hpp>
-#include <twist/test/runs.hpp>
+
 #include <twist/test/race.hpp>
+#include <twist/test/budget.hpp>
+#include <twist/test/yield.hpp>
 
 #include <twist/ed/stdlike/atomic.hpp>
 #include <twist/ed/stdlike/thread.hpp>
 
 #include <atomic>
 
-////////////////////////////////////////////////////////////////////////////////
-
-using exe::executors::ThreadPool;
-using exe::executors::Execute;
+using namespace exe;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace tasks {
+namespace submit {
 
 void KeepAlive() {
   if (twist::test::KeepRunning()) {
-    Execute(*ThreadPool::Current(), []() {
+    executors::ThreadPool::Current()->Submit([]() {
       KeepAlive();
     });
   }
 }
 
-void Backoff() {
-  twist::strand::stdlike::this_thread::yield();
-}
+void StressTest(size_t threads, size_t clients, size_t limit) {
+  executors::ThreadPool pool{threads};
 
-void Test(size_t threads, size_t clients, size_t limit) {
-  ThreadPool pool{threads};
+  pool.Start();
 
-  Execute(pool, []() {
+  executors::Submit(pool, []() {
     KeepAlive();
   });
 
@@ -52,13 +46,13 @@ void Test(size_t threads, size_t clients, size_t limit) {
       while (twist::test::KeepRunning()) {
         // TrySubmit
         if (++queue <= limit) {
-          Execute(pool, [&]() {
+          executors::Submit(pool, [&]() {
             --queue;
             ++completed;
           });
         } else {
           --queue;
-          Backoff();
+          twist::test::Yield();
         }
       }
     });
@@ -75,39 +69,43 @@ void Test(size_t threads, size_t clients, size_t limit) {
   ASSERT_GT(completed.load(), 8888);
 }
 
-}  // namespace tasks
+}  // namespace submit
 
-TWIST_TEST_TEMPLATE(Submits, tasks::Test)
-->TimeLimit(4s)
-->Run(3, 5, 111)
-->Run(4, 3, 13)
-->Run(2, 4, 5)
-->Run(9, 10, 33);
+TWIST_TEST_TEMPLATE(Submit, submit::StressTest)
+  ->TimeLimit(4s)
+  ->Run(3, 5, 111)
+  ->Run(4, 3, 13)
+  ->Run(2, 4, 5)
+  ->Run(9, 10, 33);
 
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace wait_idle {
 
 void TestOneTask() {
-  ThreadPool pool{4};
+  executors::ThreadPool pool{4};
+
+  pool.Start();
 
   while (twist::test::KeepRunning()) {
-    size_t tasks = 0;
+    size_t completed = 0;
 
-    Execute(pool, [&]() {
-      ++tasks;
+    executors::Submit(pool, [&]() {
+      ++completed;
     });
 
     pool.WaitIdle();
 
-    ASSERT_EQ(tasks, 1);
+    ASSERT_EQ(completed, 1);
   }
 
   pool.Stop();
 }
 
 void TestSeries() {
-  ThreadPool pool{1};
+  executors::ThreadPool pool{1};
+
+  pool.Start();
 
   size_t iter = 0;
 
@@ -115,29 +113,31 @@ void TestSeries() {
     ++iter;
     const size_t tasks = 1 + iter % 3;
 
-    size_t tasks_completed = 0;
+    size_t completed = 0;
     for (size_t i = 0; i < tasks; ++i) {
-      Execute(pool, [&](){
-        ++tasks_completed;
+      executors::Submit(pool, [&](){
+        ++completed;
       });
     }
 
     pool.WaitIdle();
 
-    ASSERT_EQ(tasks_completed, tasks);
+    ASSERT_EQ(completed, tasks);
   }
 
   pool.Stop();
 }
 
 void TestCurrent() {
-  ThreadPool pool{2};
+  executors::ThreadPool pool{2};
+
+  pool.Start();
 
   while (twist::test::KeepRunning()) {
     bool done = false;
 
-    Execute(pool, [&]() {
-      Execute(*ThreadPool::Current(), [&]() {
+    executors::Submit(pool, [&]() {
+      executors::ThreadPool::Current()->Submit([&]() {
         done = true;
       });
     });
@@ -151,13 +151,15 @@ void TestCurrent() {
 }
 
 void TestConcurrent() {
-  ThreadPool pool{2};
+  executors::ThreadPool pool{2};
 
-  std::atomic<size_t> tasks = 0;
+  pool.Start();
+
+  std::atomic<size_t> completed = 0;
 
   twist::ed::stdlike::thread t1([&]() {
-    Execute(pool, [&]() {
-      ++tasks;
+    executors::Submit(pool, [&]() {
+      ++completed;
     });
   });
 
@@ -168,7 +170,7 @@ void TestConcurrent() {
   t1.join();
   t2.join();
 
-  ASSERT_TRUE(tasks <= 1);
+  ASSERT_TRUE(completed.load() <= 1);
 
   pool.Stop();
 }
