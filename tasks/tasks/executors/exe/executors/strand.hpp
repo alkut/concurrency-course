@@ -4,10 +4,7 @@
 
 namespace exe::executors {
 
-// Strand (serial executor, asynchronous mutex) executes
-// tasks (critical sections) non-concurrently and in FIFO order
-// via underlying executor
-
+// Strand / serial executor / asynchronous mutex
 
 class Strand : public IExecutor {
  public:

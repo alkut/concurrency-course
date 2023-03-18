@@ -41,7 +41,7 @@ class ManualExecutor : public IExecutor {
     return 0;  // Not implemented
   }
 
-  bool HasTasks() const {
+  bool NonEmpty() const {
     return false;  // Not implemented
   }
 
