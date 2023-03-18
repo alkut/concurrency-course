@@ -43,7 +43,7 @@ void StressTest() {
   for (twist::test::Repeat repeat; repeat.Test(); ) {
     auto automaton = std::make_shared<Automaton>(pool);
 
-    size_t mutations = 1 + repeat.Iter() % 4;
+    size_t mutations = 1 + repeat.Iter() % 5;
     for (size_t i = 0; i < mutations; ++i) {
       automaton->AsyncMutate();
     }
@@ -59,7 +59,9 @@ void StressTest() {
 //////////////////////////////////////////////////////////////////////
 
 TEST_SUITE(Strand) {
-  TWIST_TEST(Automaton, 5s);
+  TWIST_TEST(Automaton, 5s) {
+    StressTest();
+  }
 }
 
 RUN_ALL_TESTS();

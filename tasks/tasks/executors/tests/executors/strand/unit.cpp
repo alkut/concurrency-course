@@ -129,6 +129,7 @@ TEST_SUITE(Strand) {
 
   SIMPLE_TEST(ConcurrentStrands) {
     ThreadPool pool{16};
+    pool.Start();
 
     static const size_t kStrands = 50;
 
@@ -162,6 +163,9 @@ TEST_SUITE(Strand) {
     Strand strand{workers};
 
     ThreadPool clients{4};
+
+    workers.Start();
+    clients.Start();
 
     static const size_t kTasks = 1024;
 
@@ -282,6 +286,8 @@ TEST_SUITE(Strand) {
   SIMPLE_TEST(NonBlockingSubmit) {
     ThreadPool pool{1};
     Strand strand{pool};
+
+    pool.Start();
 
     Submit(strand, [&]() {
       // Bubble

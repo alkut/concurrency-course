@@ -78,6 +78,7 @@ void Robots(size_t strands, size_t pushes) {
 
 void MissingTasks() {
   executors::ThreadPool pool{4};
+  pool.Start();
 
   size_t iter = 0;
 

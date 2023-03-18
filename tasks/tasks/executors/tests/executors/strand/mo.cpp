@@ -32,6 +32,7 @@ class OnePassBarrier {
 
 void MaybeAnomaly() {
   ThreadPool pool{1};
+  pool.Start();
 
   for (twist::test::Repeat repeat; repeat.Test(); ) {
     Strand strand{pool};
