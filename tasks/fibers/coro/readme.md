@@ -138,7 +138,7 @@ Step 4
 Корутина умеет останавливать и возобновлять свое исполнение, а значит ей потребуется [`ExecutionContext`](https://gitlab.com/Lipovsky/sure/-/blob/master/sure/context.hpp).
 
 1) Прочтите [документацию по `ExecutionContext`](https://gitlab.com/Lipovsky/sure/-/blob/master/docs/ru/guide.md)
-2) Посмотрите как он используется в [TinyFibers](https://gitlab.com/Lipovsky/tinyfibers/-/tree/master/tf/rt)
+2) Посмотрите как он используется в [TinyFibers](https://gitlab.com/Lipovsky/tinyfibers/-/blob/master/tf/rt/fiber.cpp)
 
 ### Исключения
 
