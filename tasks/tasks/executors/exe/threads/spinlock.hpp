@@ -10,6 +10,10 @@ class SpinLock {
     // Not implemented
   }
 
+  bool TryLock() {
+    return false;  // Not implemented
+  }
+
   void Unlock() {
     // Not implemented
   }
@@ -18,6 +22,10 @@ class SpinLock {
 
   void lock() {  // NOLINT
     Lock();
+  }
+
+  bool try_lock() {  // NOLINT
+    return TryLock();
   }
 
   void unlock() {  // NOLINT

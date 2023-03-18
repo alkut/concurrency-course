@@ -8,7 +8,7 @@
 
 ![Non-intrusive tasks](https://gitlab.com/Lipovsky/concurrency-course-media/-/raw/main/tasks/executors/non-intrusive-tasks.png)
 
-При этом главным "пользователям" экзекуторов – stackful файберам, stackless корутинам, фьючам – динамические аллокации при планировании задач не требуются: они могут управлять состоянием задач эффективнее. 
+При этом главным "пользователям" экзекуторов – stackful файберам, stackless корутинам, фьючам – динамические аллокации при планировании не требуются: они могут управлять состоянием своих задач эффективнее. 
 
 ## Интрузивные задачи
 
@@ -39,8 +39,6 @@ struct TaskBase : ITask, wheels::IntrusiveListNode<TaskBase> {
 };
 ```
 
-![Intrusive tasks](https://gitlab.com/Lipovsky/concurrency-course-media/-/raw/main/tasks/executors/intrusive-tasks.png)
-
 Метод `Submit` у `IExecutor` будет принимать `TaskBase*`:
 
 ```cpp
@@ -52,6 +50,10 @@ struct IExecutor {
   virtual void Submit(TaskBase* task) = 0;
 };
 ```
+Итого, в памяти выстроится следующая конструкция:
+
+![Intrusive tasks](https://gitlab.com/Lipovsky/concurrency-course-media/-/raw/main/tasks/executors/intrusive-tasks.png)
+
 
 - Файберы, корутины и фьючи будут использовать метод `Submit` у `IExecutor` напрямую, избегая ненужных аллокаций,
 - Свободная функция `Submit` будет аллоцировать для лямбд служебную задачу-контейнер, которая будет самоуничтожаться при завершении.
