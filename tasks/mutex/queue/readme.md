@@ -91,4 +91,4 @@ QueueSpinLock spinlock;
 
 ## Linux
 
-Найдите реализацию этого спинлока в ядре Linux.
+Найдите реализацию этого спинлока [в ядре Linux](https://github.com/torvalds/linux/tree/master/kernel/locking).
