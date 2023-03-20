@@ -193,7 +193,7 @@ TEST_SUITE(ThreadPool) {
     pool.WaitIdle();
     pool.Stop();
 
-    ASSERT_TRUE(cpu_timer.Elapsed() < 100ms);
+    ASSERT_TRUE(cpu_timer.Spent() < 100ms);
   }
 
   SIMPLE_TEST(Current) {

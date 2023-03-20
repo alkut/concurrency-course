@@ -107,7 +107,7 @@ TEST_SUITE(Mutex) {
     executors::ThreadPool scheduler{4};
     scheduler.Start();
 
-    wheels::ProcessCPUTimer timer;
+    wheels::ProcessCPUTimer cpu_timer;
 
     fibers::Event event;
 
@@ -123,7 +123,7 @@ TEST_SUITE(Mutex) {
 
     scheduler.WaitIdle();
 
-    ASSERT_TRUE(timer.Elapsed() < 100ms);
+    ASSERT_TRUE(cpu_timer.Spent() < 100ms);
 
     scheduler.Stop();
   }

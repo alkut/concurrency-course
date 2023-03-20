@@ -105,7 +105,7 @@ TEST_SUITE(WaitGroup) {
 
     wg.Wait();
 
-    ASSERT_TRUE(timer.Elapsed() < 100ms);
+    ASSERT_TRUE(timer.Spent() < 100ms);
 
     for (auto& t : workers) {
       t.join();

@@ -84,11 +84,11 @@ TEST_SUITE(BlockingQueue) {
 
     auto value = queue.Take();
 
-    auto elapsed = thread_cpu_timer.Elapsed();
+    auto spent = thread_cpu_timer.Spent();
 
     ASSERT_TRUE(value);
     ASSERT_EQ(*value, 7);
-    ASSERT_TRUE(elapsed < 100ms);
+    ASSERT_TRUE(spent < 100ms);
 
     producer.join();
   }
@@ -105,10 +105,10 @@ TEST_SUITE(BlockingQueue) {
 
     auto value = queue.Take();
 
-    auto elapsed = thread_cpu_timer.Elapsed();
+    auto spent = thread_cpu_timer.Spent();
 
     ASSERT_FALSE(value);
-    ASSERT_TRUE(elapsed < 100ms);
+    ASSERT_TRUE(spent < 100ms);
 
     producer.join();
   }
@@ -160,7 +160,7 @@ TEST_SUITE(BlockingQueue) {
 
     producer.join();
 
-    ASSERT_TRUE(process_cpu_timer.Elapsed() < 100ms);
+    ASSERT_TRUE(process_cpu_timer.Spent() < 100ms);
   }
 }
 

@@ -44,7 +44,7 @@ project_log("FetchContent: wheels")
 FetchContent_Declare(
         wheels
         GIT_REPOSITORY https://gitlab.com/Lipovsky/wheels.git
-        GIT_TAG 8a263b4b2ad16f7f93b099920b6f59bb5c5c98fe
+        GIT_TAG 2c660160fb407b34bff4f6ed29b916171a988259
 )
 FetchContent_MakeAvailable(wheels)
 

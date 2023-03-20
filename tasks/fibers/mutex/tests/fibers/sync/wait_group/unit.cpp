@@ -120,7 +120,7 @@ TEST_SUITE(WaitGroup) {
 
     std::atomic<size_t> workers = 0;
 
-    wheels::ProcessCPUTimer timer;
+    wheels::ProcessCPUTimer cpu_timer;
 
     static const size_t kWorkers = 3;
 
@@ -142,7 +142,7 @@ TEST_SUITE(WaitGroup) {
 
     scheduler.WaitIdle();
 
-    ASSERT_TRUE(timer.Elapsed() < 100ms);
+    ASSERT_TRUE(cpu_timer.Spent() < 100ms);
 
     scheduler.Stop();
   }

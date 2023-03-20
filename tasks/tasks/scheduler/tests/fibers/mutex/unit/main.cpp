@@ -63,7 +63,7 @@ TEST_SUITE(Mutex) {
 
     fibers::Mutex mutex;
 
-    wheels::ProcessCPUTimer timer;
+    wheels::ProcessCPUTimer cpu_timer;
 
     fibers::Go(scheduler, [&]() {
       mutex.Lock();
@@ -78,7 +78,7 @@ TEST_SUITE(Mutex) {
 
     scheduler.WaitIdle();
 
-    ASSERT_TRUE(timer.Elapsed() < 100ms);
+    ASSERT_TRUE(cpu_timer.Spent() < 100ms);
 
     scheduler.Stop();
   }
