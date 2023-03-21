@@ -125,12 +125,12 @@ TEST_SUITE(ThreadPool) {
 
     wheels::StopWatch stop_watch;
 
-    pool1.Submit([&] {
+    tp::Submit(pool1, [&] {
       std::this_thread::sleep_for(1s);
       ++tasks;
     });
 
-    pool2.Submit([&] {
+    tp::Submit(pool2, [&] {
       std::this_thread::sleep_for(1s);
       ++tasks;
     });
@@ -153,7 +153,7 @@ TEST_SUITE(ThreadPool) {
     for (size_t i = 0; i < 3; ++i) {
       tp::Submit(pool, [&pool] {
         std::this_thread::sleep_for(1s);
-        pool.Submit([] {
+        tp::Submit(pool, [] {
           std::this_thread::sleep_for(100s);
         });
       });
