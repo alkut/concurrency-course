@@ -83,3 +83,17 @@
   tasks:
     - task: fibers/mutex
       score: 500
+
+- group:    Cache Coherency
+  start:    21-03-2023 15:00
+  deadline: 27-03-2023 23:59
+  tasks:
+    - task: mutex/queue
+      score: 200
+
+- group:    Tasks / Part II
+  start:    21-03-2023 15:00
+  deadline: 10-04-2023 23:59
+  tasks:
+    - task: tasks/executors
+      score: 400
