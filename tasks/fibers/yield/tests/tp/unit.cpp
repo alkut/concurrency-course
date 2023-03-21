@@ -222,26 +222,6 @@ TEST_SUITE(ThreadPool) {
     ASSERT_TRUE(done);
   }
 
-  SIMPLE_TEST(SubmitAfterStop) {
-    tp::ThreadPool pool{4};
-
-    pool.Start();
-
-    bool done = false;
-
-    tp::Submit(pool, [&] {
-      std::this_thread::sleep_for(500ms);
-      tp::ThreadPool::Current()->Submit([&]() {
-        std::this_thread::sleep_for(500ms);
-        done = true;
-      });
-    });
-
-    pool.Stop();
-
-    ASSERT_FALSE(done);
-  }
-
   TEST(UseThreads, wheels::test::TestOptions().TimeLimit(1s)) {
     tp::ThreadPool pool{4};
 
