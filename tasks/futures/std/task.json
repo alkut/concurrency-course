@@ -24,7 +24,6 @@
     {
       "patterns": [
         "std::future",
-        "new",
         "yield",
         "sleep_for",
         "SpinWait"
