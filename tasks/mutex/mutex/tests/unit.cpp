@@ -77,9 +77,9 @@ TEST_SUITE(UnitTest) {
       mutex.Lock();
       mutex.Unlock();
 
-      auto elapsed = cpu_timer.Elapsed();
+      auto spent = cpu_timer.Spent();
 
-      ASSERT_TRUE(elapsed < 200ms);
+      ASSERT_TRUE(spent < 200ms);
     });
 
     sleeper.join();
