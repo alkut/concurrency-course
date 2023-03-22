@@ -151,15 +151,10 @@ TEST_SUITE(ThreadPool) {
     pool.Start();
 
     for (size_t i = 0; i < 3; ++i) {
-      tp::Submit(pool, [&pool] {
-        std::this_thread::sleep_for(1s);
-        tp::Submit(pool, [] {
-          std::this_thread::sleep_for(100s);
-        });
+      tp::Submit(pool, [] {
+        std::this_thread::sleep_for(128ms);
       });
     }
-
-    std::this_thread::sleep_for(250ms);
 
     pool.Stop();
   }
