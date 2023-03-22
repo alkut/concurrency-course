@@ -215,6 +215,7 @@ TEST_SUITE(ThreadPool) {
 
     pool.Submit([&]() {
       std::this_thread::sleep_for(500ms);
+
       tp::ThreadPool::Current()->Submit([&]() {
         std::this_thread::sleep_for(500ms);
         done = true;

@@ -205,7 +205,8 @@ TEST_SUITE(ThreadPool) {
 
     executors::Submit(pool, [&] {
       std::this_thread::sleep_for(500ms);
-      executors::ThreadPool::Current()->Submit([&]() {
+
+      executors::Submit(*executors::ThreadPool::Current(), [&] {
         std::this_thread::sleep_for(500ms);
         done = true;
       });
@@ -262,7 +263,7 @@ TEST_SUITE(ThreadPool) {
 
   void KeepAlive() {
     if (wheels::test::TestTimeLeft() > 300ms) {
-      executors::ThreadPool::Current()->Submit([]() {
+      executors::Submit(*executors::ThreadPool::Current(), [] {
         KeepAlive();
       });
     }
