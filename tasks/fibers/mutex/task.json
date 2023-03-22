@@ -59,6 +59,12 @@
     },
     {
       "targets": [
+        "fibers_event_storage_tests"
+      ],
+      "profiles": ["FaultyFibersASan"]
+    },
+    {
+      "targets": [
         "fibers_mutex_unit_tests"
       ],
       "profiles": [
@@ -95,6 +101,12 @@
         "FaultyThreadsASan",
         "FaultyThreadsTSan"
       ]
+    },
+    {
+      "targets": [
+        "fibers_wg_storage_tests"
+      ],
+      "profiles": ["FaultyFibersASan"]
     }
   ],
   "lint_files": ["exe"],
