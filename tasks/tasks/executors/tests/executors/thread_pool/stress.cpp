@@ -21,7 +21,7 @@ namespace submit {
 
 void KeepAlive() {
   if (twist::test::KeepRunning()) {
-    executors::ThreadPool::Current()->Submit([]() {
+    executors::Submit(*executors::ThreadPool::Current(), [] {
       KeepAlive();
     });
   }
@@ -135,7 +135,7 @@ void TestCurrent() {
     bool done = false;
 
     executors::Submit(pool, [&] {
-      executors::ThreadPool::Current()->Submit([&] {
+      executors::Submit(*executors::ThreadPool::Current(), [&] {
         done = true;
       });
     });

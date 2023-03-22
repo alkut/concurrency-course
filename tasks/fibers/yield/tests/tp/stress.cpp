@@ -1,9 +1,11 @@
 #include <exe/tp/thread_pool.hpp>
+#include <exe/tp/submit.hpp>
 
 #include <twist/test/with/wheels/stress.hpp>
 
 #include <twist/test/race.hpp>
 #include <twist/test/budget.hpp>
+#include <twist/test/repeat.hpp>
 #include <twist/test/yield.hpp>
 
 #include <twist/ed/stdlike/atomic.hpp>
@@ -19,7 +21,7 @@ namespace submit {
 
 void KeepAlive() {
   if (twist::test::KeepRunning()) {
-    tp::ThreadPool::Current()->Submit([]() {
+    tp::Submit(*tp::ThreadPool::Current(), [] {
       KeepAlive();
     });
   }
@@ -30,7 +32,7 @@ void StressTest(size_t threads, size_t clients, size_t limit) {
 
   pool.Start();
 
-  pool.Submit([]() {
+  tp::Submit(pool, [] {
     KeepAlive();
   });
 
@@ -45,7 +47,7 @@ void StressTest(size_t threads, size_t clients, size_t limit) {
       while (twist::test::KeepRunning()) {
         // TrySubmit
         if (++queue <= limit) {
-          pool.Submit([&]() {
+          tp::Submit(pool, [&] {
             --queue;
             ++completed;
           });
@@ -86,10 +88,10 @@ void TestOneTask() {
 
   pool.Start();
 
-  while (twist::test::KeepRunning()) {
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
     size_t completed = 0;
 
-    pool.Submit([&]() {
+    tp::Submit(pool, [&] {
       ++completed;
     });
 
@@ -106,15 +108,12 @@ void TestSeries() {
 
   pool.Start();
 
-  size_t iter = 0;
-
-  while (twist::test::KeepRunning()) {
-    ++iter;
-    const size_t tasks = 1 + iter % 3;
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
+    const size_t tasks = 1 + repeat.Iter() % 3;
 
     size_t completed = 0;
     for (size_t i = 0; i < tasks; ++i) {
-      pool.Submit([&](){
+      tp::Submit(pool, [&] {
         ++completed;
       });
     }
@@ -132,11 +131,11 @@ void TestCurrent() {
 
   pool.Start();
 
-  while (twist::test::KeepRunning()) {
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
     bool done = false;
 
-    pool.Submit([&]() {
-      tp::ThreadPool::Current()->Submit([&]() {
+    tp::Submit(pool, [&] {
+      tp::Submit(*tp::ThreadPool::Current(), [&] {
         done = true;
       });
     });
@@ -156,13 +155,13 @@ void TestConcurrent() {
 
   std::atomic<size_t> completed = 0;
 
-  twist::ed::stdlike::thread t1([&]() {
-    pool.Submit([&]() {
+  twist::ed::stdlike::thread t1([&] {
+    tp::Submit(pool, [&] {
       ++completed;
     });
   });
 
-  twist::ed::stdlike::thread t2([&]() {
+  twist::ed::stdlike::thread t2([&] {
     pool.WaitIdle();
   });
 
