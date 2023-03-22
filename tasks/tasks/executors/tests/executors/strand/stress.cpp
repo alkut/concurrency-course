@@ -55,7 +55,7 @@ void Robots(size_t strands, size_t pushes) {
 
   while (repeat.Test()) {
     for (auto& robot : robots) {
-      Submit(clients, [&robot, pushes]() {
+      Submit(clients, [&robot, pushes] {
         for (size_t j = 0; j < pushes; ++j) {
           robot.Push();
         }
@@ -80,17 +80,15 @@ void MissingTasks() {
   executors::ThreadPool pool{4};
   pool.Start();
 
-  size_t iter = 0;
-
   for (twist::test::Repeat repeat; repeat.Test(); ) {
-    executors::Strand strand(pool);
+    executors::Strand strand{pool};
 
-    size_t todo = 2 + (iter++) % 5;
+    size_t todo = 2 + repeat.Iter() % 5;
 
     size_t done = 0;
 
     for (size_t i = 0; i < todo; ++i) {
-      executors::Submit(strand, [&done]() {
+      executors::Submit(strand, [&done] {
         ++done;
       });
     }
