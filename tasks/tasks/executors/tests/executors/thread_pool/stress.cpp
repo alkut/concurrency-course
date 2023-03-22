@@ -5,6 +5,7 @@
 
 #include <twist/test/race.hpp>
 #include <twist/test/budget.hpp>
+#include <twist/test/repeat.hpp>
 #include <twist/test/yield.hpp>
 
 #include <twist/ed/stdlike/atomic.hpp>
@@ -87,10 +88,10 @@ void TestOneTask() {
 
   pool.Start();
 
-  while (twist::test::KeepRunning()) {
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
     size_t completed = 0;
 
-    executors::Submit(pool, [&]() {
+    executors::Submit(pool, [&] {
       ++completed;
     });
 
@@ -107,15 +108,12 @@ void TestSeries() {
 
   pool.Start();
 
-  size_t iter = 0;
-
-  while (twist::test::KeepRunning()) {
-    ++iter;
-    const size_t tasks = 1 + iter % 3;
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
+    const size_t tasks = 1 + repeat.Iter() % 3;
 
     size_t completed = 0;
     for (size_t i = 0; i < tasks; ++i) {
-      executors::Submit(pool, [&](){
+      executors::Submit(pool, [&] {
         ++completed;
       });
     }
@@ -133,11 +131,11 @@ void TestCurrent() {
 
   pool.Start();
 
-  while (twist::test::KeepRunning()) {
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
     bool done = false;
 
-    executors::Submit(pool, [&]() {
-      executors::ThreadPool::Current()->Submit([&]() {
+    executors::Submit(pool, [&] {
+      executors::ThreadPool::Current()->Submit([&] {
         done = true;
       });
     });
