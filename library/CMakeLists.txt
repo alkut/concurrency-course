@@ -44,7 +44,7 @@ project_log("FetchContent: wheels")
 FetchContent_Declare(
         wheels
         GIT_REPOSITORY https://gitlab.com/Lipovsky/wheels.git
-        GIT_TAG 2c660160fb407b34bff4f6ed29b916171a988259
+        GIT_TAG 6824f5be279708ec24bc81e021b6f76279fa3868
 )
 FetchContent_MakeAvailable(wheels)
 
@@ -55,7 +55,7 @@ project_log("FetchContent: sure")
 FetchContent_Declare(
         sure
         GIT_REPOSITORY https://gitlab.com/Lipovsky/sure.git
-        GIT_TAG c99a4647f9a7297f5805f07f3c10f166ae86b8d6
+        GIT_TAG 1503f8fe779c65ef23092a2e98a3d1211e3e7887
 )
 FetchContent_MakeAvailable(sure)
 
@@ -66,7 +66,7 @@ project_log("FetchContent: twist")
 FetchContent_Declare(
         twist
         GIT_REPOSITORY https://gitlab.com/Lipovsky/twist.git
-        GIT_TAG 3b99cc5d0288ecea617207f630b917de8473f13f
+        GIT_TAG f3af679993531ca73dc77061b9009dd2f3dda77f
 )
 FetchContent_MakeAvailable(twist)
 
