@@ -82,19 +82,19 @@
     - task: fibers/sleep_for
       score: 300
 
-- group:    Fibers / Part III
-  start:    11-03-2023 15:00
-  deadline: 10-04-2023 23:59
-  tasks:
-    - task: fibers/mutex
-      score: 500
-
 - group:    Cache Coherency
   start:    18-03-2023 15:00
   deadline: 27-03-2023 23:59
   tasks:
     - task: mutex/queue
       score: 200
+
+- group:    Fibers / Part III
+  start:    11-03-2023 15:00
+  deadline: 10-04-2023 23:59
+  tasks:
+    - task: fibers/mutex
+      score: 500
 
 - group:    Tasks / Part II
   start:    18-03-2023 15:00
