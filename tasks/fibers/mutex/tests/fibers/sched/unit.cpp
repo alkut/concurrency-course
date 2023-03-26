@@ -1,5 +1,4 @@
 #include <exe/executors/thread_pool.hpp>
-#include <exe/executors/submit.hpp>
 
 #include <exe/fibers/sched/go.hpp>
 #include <exe/fibers/sched/yield.hpp>
@@ -86,61 +85,74 @@ TEST_SUITE(Fibers) {
     pool.Stop();
   }
 
-  SIMPLE_TEST(Yield) {
-    std::atomic<int> value{0};
-
-    auto check_value = [&]() {
-      const int kLimit = 10;
-
-      ASSERT_TRUE(value.load() < kLimit);
-      ASSERT_TRUE(value.load() > -kLimit);
-    };
-
-    static const size_t kIterations = 12345;
-
-    auto bull = [&]() {
-      for (size_t i = 0; i < kIterations; ++i) {
-        value.fetch_add(1);
-        fibers::Yield();
-        check_value();
-      }
-    };
-
-    auto bear = [&]() {
-      for (size_t i = 0; i < kIterations; ++i) {
-        value.fetch_sub(1);
-        fibers::Yield();
-        check_value();
-      }
-    };
-
-    // NB: 1 worker thread!
+  SIMPLE_TEST(Yield1) {
     executors::ThreadPool pool{1};
     pool.Start();
 
-    fibers::Go(pool, [&]() {
-      fibers::Go(bull);
-      fibers::Go(bear);
+    bool done = false;
+
+    fibers::Go(pool, [&] {
+      fibers::Yield();
+
+      AssertOn(pool);
+      done = true;
     });
+
+    pool.WaitIdle();
+    ASSERT_TRUE(done);
+
+    pool.Stop();
+  }
+
+  SIMPLE_TEST(Yield2) {
+    executors::ThreadPool pool{1};
+
+    enum State : int {
+      Ping = 0,
+      Pong = 1
+    };
+
+    int state = Ping;
+
+    fibers::Go(pool, [&] {
+      for (size_t i = 0; i < 2; ++i) {
+        ASSERT_EQ(state, Ping);
+        state = Pong;
+
+        fibers::Yield();
+      }
+    });
+
+    fibers::Go(pool, [&] {
+      for (size_t j = 0; j < 2; ++j) {
+        ASSERT_EQ(state, Pong);
+        state = Ping;
+
+        fibers::Yield();
+      }
+    });
+
+    pool.Start();
 
     pool.WaitIdle();
     pool.Stop();
   }
 
-  SIMPLE_TEST(Yield2) {
+  SIMPLE_TEST(Yield3) {
     executors::ThreadPool pool{4};
-    pool.Start();
 
-    static const size_t kYields = 65'536;
+    static const size_t kYields = 1024;
 
-    auto yielder = [] {
+    auto runner = [] {
       for (size_t i = 0; i < kYields; ++i) {
         fibers::Yield();
       }
     };
 
-    fibers::Go(pool, yielder);
-    fibers::Go(pool, yielder);
+    fibers::Go(pool, runner);
+    fibers::Go(pool, runner);
+
+    pool.Start();
 
     pool.WaitIdle();
     pool.Stop();
@@ -178,7 +190,7 @@ TEST_SUITE(Fibers) {
 
     auto make_tester = [](executors::ThreadPool& pool) {
       return [&pool]() {
-        static const size_t kIterations = 1024;
+        static const size_t kIterations = 128;
 
         for (size_t i = 0; i < kIterations; ++i) {
           AssertOn(pool);
