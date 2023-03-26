@@ -5,7 +5,7 @@
 #include <exe/fibers/sched/go.hpp>
 #include <exe/fibers/sync/wait_group.hpp>
 
-#include <twist/test/budget.hpp>
+#include <twist/test/repeat.hpp>
 
 using namespace exe;
 
@@ -13,7 +13,7 @@ void StorageTest() {
   executors::ThreadPool scheduler{5};
   scheduler.Start();
 
-  while (twist::test::KeepRunning()) {
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
     fibers::Go(scheduler, [] {
       auto* wg = new fibers::WaitGroup{};
 
@@ -32,8 +32,8 @@ void StorageTest() {
   scheduler.Stop();
 }
 
-TEST_SUITE(Event) {
-  TWIST_TEST(Event, 5s) {
+TEST_SUITE(WaitGroup) {
+  TWIST_TEST(Storage, 5s) {
     StorageTest();
   }
 }

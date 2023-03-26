@@ -5,7 +5,7 @@
 #include <exe/fibers/sched/go.hpp>
 #include <exe/fibers/sync/event.hpp>
 
-#include <twist/test/budget.hpp>
+#include <twist/test/repeat.hpp>
 
 using namespace exe;
 
@@ -15,7 +15,7 @@ void StorageTest() {
   executors::ThreadPool scheduler{5};
   scheduler.Start();
 
-  while (twist::test::KeepRunning()) {
+  for (twist::test::Repeat repeat; repeat.Test(); ) {
     fibers::Go(scheduler, [] {
       auto* event = new fibers::Event{};
 
@@ -36,7 +36,7 @@ void StorageTest() {
 //////////////////////////////////////////////////////////////////////
 
 TEST_SUITE(Event) {
-  TWIST_TEST(Event, 5s) {
+  TWIST_TEST(Storage, 5s) {
     StorageTest();
   }
 }
