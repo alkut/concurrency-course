@@ -152,7 +152,7 @@ void Test(size_t producers, size_t consumers) {
   for (size_t i = 0; i < producers; ++i) {
     race.Add([&, i]() {
       int value = i;
-      while (twist::test::KeepRunning()) {
+      for (twist::test::TimeBudget budget; budget.Withdraw(); ) {
         queue_.Put(value);
         produced.fetch_add(value);
         value += producers;
