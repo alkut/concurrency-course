@@ -14,6 +14,7 @@ using namespace std::chrono_literals;
 TEST_SUITE(MutexExtra) {
   SIMPLE_TEST(UnlockFork) {
     executors::ThreadPool scheduler{4};
+    scheduler.Start();
 
     fibers::Mutex mutex;
 
