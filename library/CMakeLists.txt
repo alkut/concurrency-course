@@ -55,7 +55,7 @@ project_log("FetchContent: sure")
 FetchContent_Declare(
         sure
         GIT_REPOSITORY https://gitlab.com/Lipovsky/sure.git
-        GIT_TAG 90dd4ec3c3c0b63e6e75e394affe99b3bff796e4
+        GIT_TAG e1034bc1d0327bee23e049347c093ce8ae96f91b
 )
 FetchContent_MakeAvailable(sure)
 
