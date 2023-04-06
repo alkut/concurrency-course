@@ -9,29 +9,30 @@ namespace exe::executors::tp::compute {
 
 class ThreadPool : public IExecutor {
  public:
-  explicit ThreadPool(size_t workers);
+  explicit ThreadPool(size_t threads);
   ~ThreadPool();
 
   // Non-copyable
   ThreadPool(const ThreadPool&) = delete;
   ThreadPool& operator=(const ThreadPool&) = delete;
 
+  // Non-movable
+  ThreadPool(ThreadPool&&) = delete;
+  ThreadPool& operator=(ThreadPool&&) = delete;
+
+  void Start();
+
   // IExecutor
-  // Schedules task for execution in one of the worker threads
-  void Execute(Task task) override;
+  void Submit(Task);
 
-  // Waits until outstanding work count has reached zero
-  void WaitIdle();
-
-  // Stops the worker threads as soon as possible
-  // Pending tasks will be discarded
-  void Stop();
-
-  // Locates current thread pool from worker thread
   static ThreadPool* Current();
 
+  void WaitIdle();
+
+  void Stop();
+
  private:
-  // Worker threads, task queue, etc
+  // ???
 };
 
 }  // namespace exe::executors::tp::compute

@@ -4,7 +4,7 @@
 
 namespace exe::executors {
 
-// Intrusive task?
+// Consider intrusive tasks
 using Task = fu2::unique_function<void()>;
 
 }  // namespace exe::executors

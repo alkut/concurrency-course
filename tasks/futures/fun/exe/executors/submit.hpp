@@ -6,14 +6,16 @@ namespace exe::executors {
 
 /*
  * Usage:
- * Execute(thread_pool, []() {
- *   std::cout << "Hi" << std::endl;
+ *
+ * Submit(thread_pool, [] {
+ *   fmt::println("Running on thread pool");
  * });
+ *
  */
 
 template <typename F>
-void Execute(IExecutor& where, F&& f) {
-  where.Execute(std::forward<F>(f));
+void Submit(IExecutor& exe, F&& fun) {
+  exe.Submit(std::forward<F>(fun));
 }
 
 }  // namespace exe::executors

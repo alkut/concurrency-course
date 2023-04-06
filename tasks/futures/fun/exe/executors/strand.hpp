@@ -4,16 +4,22 @@
 
 namespace exe::executors {
 
-// Strand (serial executor, asynchronous mutex)
-// Executes (via underlying executor) tasks
-// non-concurrently and in FIFO order
+// Strand / serial executor / asynchronous mutex
 
 class Strand : public IExecutor {
  public:
   explicit Strand(IExecutor& underlying);
 
+  // Non-copyable
+  Strand(const Strand&) = delete;
+  Strand& operator=(const Strand&) = delete;
+
+  // Non-movable
+  Strand(Strand&&) = delete;
+  Strand& operator=(Strand&&) = delete;
+
   // IExecutor
-  void Execute(Task task) override;
+  void Submit(Task cs) override;
 
  private:
   // ???

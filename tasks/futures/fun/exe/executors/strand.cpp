@@ -5,7 +5,7 @@ namespace exe::executors {
 Strand::Strand(IExecutor& /*underlying*/) {
 }
 
-void Strand::Execute(Task /*task*/) {
+void Strand::Submit(Task /*task*/) {
   // Not implemented
 }
 

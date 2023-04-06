@@ -4,7 +4,7 @@
 
 namespace exe::executors {
 
-// Default thread pool
+// Default thread pool implementation
 using ThreadPool = tp::compute::ThreadPool;
 
 }  // namespace exe::executors

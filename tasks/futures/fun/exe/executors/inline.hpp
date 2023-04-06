@@ -4,7 +4,8 @@
 
 namespace exe::executors {
 
-// Executes task immediately in the current thread
-IExecutor& GetInlineExecutor();
+// Executes task immediately on the current thread
+
+IExecutor& Inline();
 
 }  // namespace exe::executors

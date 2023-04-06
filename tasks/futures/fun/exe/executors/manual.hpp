@@ -8,8 +8,18 @@ namespace exe::executors {
 
 class ManualExecutor : public IExecutor {
  public:
+  ManualExecutor() = default;
+
+  // Non-copyable
+  ManualExecutor(const ManualExecutor&) = delete;
+  ManualExecutor& operator=(const ManualExecutor&) = delete;
+
+  // Non-movable
+  ManualExecutor(ManualExecutor&&) = delete;
+  ManualExecutor& operator=(ManualExecutor&&) = delete;
+
   // IExecutor
-  void Execute(Task task) override;
+  void Submit(Task) override;
 
   // Run tasks
 
@@ -24,15 +34,19 @@ class ManualExecutor : public IExecutor {
 
   // Run tasks until queue is empty
   // Returns number of completed tasks
-  // Post-condition: HasTasks() == false
+  // Post-condition: IsEmpty() == true
   size_t Drain();
 
   size_t TaskCount() const {
     return 0;  // Not implemented
   }
 
-  bool HasTasks() const {
-    return false;  // Not implemented
+  bool IsEmpty() const {
+    return true;  // Not implemented
+  }
+
+  bool NonEmpty() const {
+    return !IsEmpty();
   }
 
  private:

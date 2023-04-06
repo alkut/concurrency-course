@@ -2,7 +2,7 @@
 
 namespace exe::executors {
 
-void ManualExecutor::Execute(Task /*task*/) {
+void ManualExecutor::Submit(Task /*task*/) {
   // Not implemented
 }
 
