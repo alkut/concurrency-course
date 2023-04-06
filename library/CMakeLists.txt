@@ -39,6 +39,19 @@ FetchContent_MakeAvailable(function2)
 
 # --------------------------------------------------------------------
 
+# tl::expected
+
+project_log("FetchContent: expected")
+
+FetchContent_Declare(
+        expected
+        GIT_REPOSITORY https://github.com/TartanLlama/expected.git
+        GIT_TAG cmake_love
+)
+FetchContent_MakeAvailable(expected)
+
+# --------------------------------------------------------------------
+
 project_log("FetchContent: wheels")
 
 FetchContent_Declare(

@@ -2,7 +2,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin")
 
 # --------------------------------------------------------------------
 
-set(LIBS_LIST "wheels;twist;fmt;function2")
+set(LIBS_LIST "wheels;twist;fmt;function2;expected")
 
 # --------------------------------------------------------------------
 

@@ -29,6 +29,7 @@
     "tinyfibers-src",
     "fmt-src/include",
     "function2-src/include",
+    "expected-src/include",
     "asio-src/asio/include"
   ],
   "forbidden": [

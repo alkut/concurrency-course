@@ -37,5 +37,6 @@ _You don't have to be an engineer to be a racing driver, but you do have to have
 
 ### Внешние
 
-- [Fmt](https://github.com/fmtlib/fmt) – форматированный вывод
-- [Function2](https://github.com/Naios/function2) – замена для `std::function`
+- [fmt](https://github.com/fmtlib/fmt) – форматированный вывод
+- [function2](https://github.com/Naios/function2) – замена для `std::function`
+- [expected](https://github.com/TartanLlama/expected) – `expected<T, E>`
