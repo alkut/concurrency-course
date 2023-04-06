@@ -22,12 +22,19 @@
 #include <exe/futures/syntax/both.hpp>
 #include <exe/futures/syntax/or.hpp>
 
+#include <exe/result/make/value.hpp>
+#include <exe/result/make/error.hpp>
+
 #include <wheels/core/panic.hpp>
 
 #include <fmt/core.h>
 #include <fmt/std.h>
 
 using namespace exe;
+
+std::error_code Timeout() {
+  return std::make_error_code(std::errc::timed_out);
+}
 
 int main() {
   executors::ThreadPool pool{4};
@@ -57,7 +64,7 @@ int main() {
 
     auto timeout = std::make_error_code(std::errc::timed_out);
 
-    auto r = futures::Failure<int>(timeout) | futures::Get();
+    auto r = futures::Error<int>(timeout) | futures::Get();
 
     if (!r) {
       fmt::println("Failure -> {}", *r);
@@ -68,9 +75,9 @@ int main() {
     // Submit
 
     auto r = futures::Submit(pool,
-                             []() -> int {
+                             []() {
                                fmt::println("Running on thread pool");
-                               return 7;
+                               return result::Value(7);
                              }) |
              futures::Get();
 
@@ -81,9 +88,9 @@ int main() {
     // Submit + Map
 
     auto r = futures::Submit(pool,
-                             []() -> int {
+                             []() {
                                fmt::println("Running on thread pool");
-                               return 1;
+                               return result::Value(1);
                              }) |
              futures::Map([](int v) {
                return v + 1;
@@ -97,14 +104,14 @@ int main() {
     // AndThen / OrElse
 
     auto r = futures::Value(1) |
-             futures::AndThen([](int) -> futures::Result<int> {
-               auto timeout = std::make_error_code(std::errc::timed_out);
-               throw timeout;
+             futures::AndThen([](int) -> Result<int> {
+               return result::Error(Timeout());
              }) |
-             futures::AndThen([](int) -> futures::Result<int> {
+             futures::AndThen([](int) -> Result<int> {
                wheels::Panic("Should be skipped");
+               return -1;
              }) |
-             futures::OrElse([](futures::Error) -> futures::Result<int> {
+             futures::OrElse([](std::error_code) -> Result<int> {
                return 42;  // Fallback
              }) |
              futures::Get();
@@ -113,15 +120,17 @@ int main() {
   }
 
   {
-    futures::Future<int> g = futures::Submit(pool,
-                                             [&] {
-                                               return futures::Submit(pool, [] {
-                                                 return 42;
-                                               });
-                                             }) |
-                             futures::Flatten();
+    // Flatten
 
-    auto r = std::move(g) | futures::Get();
+    futures::Future<int> f = futures::Submit(pool, [&] {
+      return result::Value(
+          futures::Submit(pool, [] {
+            return result::Value(7);
+          }));
+    }) |
+        futures::Flatten();
+
+    auto r = std::move(f) | futures::Get();
 
     fmt::println("Flatten -> {}", *r);
   }
@@ -130,10 +139,10 @@ int main() {
     // FirstOf
 
     auto f = futures::Submit(pool, [] {
-      return 1;
+      return result::Value(1);
     });
     auto g = futures::Submit(pool, [] {
-      return 2;
+      return result::Value(2);
     });
 
     auto r = (std::move(f) or std::move(g)) | futures::Get();

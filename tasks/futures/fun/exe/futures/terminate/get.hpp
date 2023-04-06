@@ -2,6 +2,8 @@
 
 #include <exe/futures/syntax/pipe.hpp>
 
+#include <exe/result/types/result.hpp>
+
 namespace exe::futures {
 
 namespace pipe {

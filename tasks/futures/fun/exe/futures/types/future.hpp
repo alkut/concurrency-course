@@ -1,6 +1,6 @@
 #pragma once
 
-#include <exe/futures/types/result.hpp>
+#include <exe/result/types/result.hpp>
 
 #include <cstdlib>
 

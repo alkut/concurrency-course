@@ -7,8 +7,15 @@
 
 namespace exe::futures {
 
+namespace traits {
+
 template <typename F>
-Future<std::invoke_result_t<F>> Submit(executors::IExecutor& /*exe*/,
+using SubmitT = typename std::invoke_result_t<F>::value_type;
+
+}  // namespace traits
+
+template <typename F>
+Future<traits::SubmitT<F>> Submit(executors::IExecutor& /*exe*/,
                                        F /*fun*/) {
   std::abort();  // Not implemented
 }
