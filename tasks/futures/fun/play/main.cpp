@@ -30,6 +30,7 @@
 #include <fmt/std.h>
 
 using namespace exe;
+using wheels::Unit;
 
 Error Timeout() {
   return std::make_error_code(std::errc::timed_out);
@@ -100,21 +101,22 @@ int main() {
   {
     // Forget
 
-    futures::Just() | futures::Map([](wheels::Unit) {
+    futures::Just() | futures::Map([](Unit) -> Unit {
       fmt::println("Just");
+      return {};
     }) | futures::Forget();
   }
 
   {
     auto r = futures::Value(1) | futures::Map([](int v) {
-               fmt::println("Inline")
-                   // Inline
-                   return v +
-                   1;
+               fmt::println("Inline");
+               return v + 1;
              }) |
-             futures::Via(pool) | futures::Map(int v) {
-      fmt::println("ThreadPool") return v + 1;
-    }) | futures::Get();
+             futures::Via(pool) | futures::Map([](int v) {
+               fmt::println("ThreadPool");
+               return v + 1;
+             }) |
+             futures::Get();
 
     fmt::println("Value.Map.Via.Map -> {}", *r);
   }
