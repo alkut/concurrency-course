@@ -31,7 +31,7 @@
 
 using namespace exe;
 
-std::error_code Timeout() {
+Error Timeout() {
   return std::make_error_code(std::errc::timed_out);
 }
 
