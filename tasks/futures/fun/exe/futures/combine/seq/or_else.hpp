@@ -16,7 +16,7 @@ struct [[nodiscard]] OrElse {
 
   // Result<U>
   template <typename T>
-  using R = std::invoke_result_t<F, std::error_code>;
+  using R = std::invoke_result_t<F, Error>;
 
   template <typename T>
   using U = typename R<T>::value_type;
