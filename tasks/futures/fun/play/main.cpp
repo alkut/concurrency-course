@@ -66,7 +66,7 @@ int main() {
     auto r = futures::Fail<int>(timeout) | futures::Get();
 
     if (!r) {
-      fmt::println("Failure -> {}", *r);
+      fmt::println("Fail -> {}", *r);
     }
   }
 
@@ -96,7 +96,7 @@ int main() {
              }) |
              futures::Get();
 
-    fmt::println("Submit -> {}", r.value());
+    fmt::println("Submit.Map -> {}", r.value());
   }
 
   {
@@ -105,6 +105,20 @@ int main() {
     futures::Just() | futures::Map([](wheels::Unit) {
       fmt::println("Just");
     }) | futures::Forget();
+  }
+
+  {
+    auto r = futures::Value(1) | futures::Map([](int v) {
+               fmt::println("Inline")
+                   // Inline
+                   return v +
+                   1;
+             }) |
+             futures::Via(pool) | futures::Map(int v) {
+      fmt::println("ThreadPool") return v + 1;
+    }) | futures::Get();
+
+    fmt::println("Value.Map.Via.Map -> {}", *r);
   }
 
   {
@@ -122,7 +136,7 @@ int main() {
              }) |
              futures::Get();
 
-    fmt::println("Pipeline -> {}", *r);
+    fmt::println("AndThen.OrElse -> {}", *r);
   }
 
   {

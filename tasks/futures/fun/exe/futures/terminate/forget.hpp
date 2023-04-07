@@ -15,8 +15,7 @@ struct [[nodiscard]] Forget {
 
 }  // namespace pipe
 
-template <typename T>
-auto Forget(Future<T>) {
+inline auto Forget() {
   return pipe::Forget{};
 }
 
