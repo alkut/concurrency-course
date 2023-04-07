@@ -9,3 +9,5 @@ add_subdirectory(futures)
 add_subdirectory(coro)
 add_subdirectory(lockfree)
 add_subdirectory(mm)
+
+add_subdirectory(exe)
