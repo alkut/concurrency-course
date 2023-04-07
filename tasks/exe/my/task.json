@@ -1,0 +1,8 @@
+{
+  "tests": [
+  ],
+  "lint_files": ["exe"],
+  "submit_files": ["exe"],
+  "forbidden": [
+  ]
+}
