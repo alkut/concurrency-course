@@ -61,9 +61,7 @@ int main() {
   {
     // Failure
 
-    auto timeout = std::make_error_code(std::errc::timed_out);
-
-    auto r = futures::Fail<int>(timeout) | futures::Get();
+    auto r = futures::Fail<int>(/*with=*/Timeout()) | futures::Get();
 
     if (!r) {
       fmt::println("Fail -> {}", *r);

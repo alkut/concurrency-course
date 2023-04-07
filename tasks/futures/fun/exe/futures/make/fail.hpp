@@ -7,7 +7,7 @@
 namespace exe::futures {
 
 template <typename T>
-Future<T> Fail(Error) {
+Future<T> Fail(Error /*with*/) {
   std::abort();  // Not implemented
 }
 
