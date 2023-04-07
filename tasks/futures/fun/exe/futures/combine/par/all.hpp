@@ -7,10 +7,10 @@
 namespace exe::futures {
 
 template <typename X, typename Y>
-Future<std::tuple<X, Y>> All(Future<X>, Future<Y>) {
+Future<std::tuple<X, Y>> Both(Future<X>, Future<Y>) {
   std::abort();  // Not implemented
 }
 
-// + variadic All(Future<T> ...)
+// + variadic All(Futures)
 
 }  // namespace exe::futures
