@@ -124,17 +124,18 @@ int main() {
   {
     // AndThen / OrElse
 
-    auto r = futures::Value(1) | futures::AndThen([](int) -> Result<int> {
-               return result::Err(Timeout());
-             }) |
-             futures::AndThen([](int) -> Result<int> {
-               wheels::Panic("Should be skipped");
-               return -1;
-             }) |
-             futures::OrElse([](std::error_code) -> Result<int> {
-               return 42;  // Fallback
-             }) |
-             futures::Get();
+    auto r = futures::Value(1)
+             | futures::AndThen([](int) -> Result<int> {
+                 return result::Err(Timeout());
+               })
+             | futures::AndThen([](int) -> Result<int> {
+                 wheels::Panic("Should be skipped");
+                 return -1;
+               })
+             | futures::OrElse([](std::error_code) -> Result<int> {
+                 return 42;  // Fallback
+               })
+             | futures::Get();
 
     fmt::println("AndThen.OrElse -> {}", *r);
   }
@@ -157,7 +158,7 @@ int main() {
   }
 
   {
-    // FirstOf
+    // First
 
     auto f = futures::Submit(pool, [] {
       return result::Ok(1);
@@ -169,7 +170,24 @@ int main() {
 
     auto r = (std::move(f) or std::move(g)) | futures::Get();
 
-    fmt::println("FirstOf -> {}", *r);
+    fmt::println("First -> {}", *r);
+  }
+
+  {
+    // Both
+
+    auto f = futures::Submit(pool, [] {
+      return result::Ok(1);
+    });
+
+    auto g = futures::Submit(pool, [] {
+      return result::Ok(2);
+    });
+
+    auto r = (std::move(f) + std::move(g)) | futures::Get();
+    auto [x, y] = r.value();
+
+    fmt::println("Both -> ({}, {})", x, y);
   }
 
   pool.WaitIdle();
