@@ -2,12 +2,12 @@
 
 #include <exe/futures/types/future.hpp>
 
-#include <system_error>
+#include <exe/result/types/error.hpp>
 
 namespace exe::futures {
 
 template <typename T>
-Future<T> Error(std::error_code) {
+Future<T> Fail(Error) {
   std::abort();  // Not implemented
 }
 

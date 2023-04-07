@@ -1,10 +1,10 @@
 #pragma once
 
-#include <wheels/core/unit.hpp>
+#include <exe/futures/types/ack.hpp>
 
 namespace exe::futures {
 
-inline Future<wheels::Unit> Just() {
+inline Ack Just() {
   std::abort();  // Not implemented
 }
 

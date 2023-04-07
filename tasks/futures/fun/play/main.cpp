@@ -3,15 +3,14 @@
 #include <exe/futures/make/contract.hpp>
 #include <exe/futures/make/submit.hpp>
 #include <exe/futures/make/value.hpp>
-#include <exe/futures/make/failure.hpp>
+#include <exe/futures/make/fail.hpp>
 #include <exe/futures/make/just.hpp>
 
+#include <exe/futures/combine/seq/map.hpp>
 #include <exe/futures/combine/seq/and_then.hpp>
 #include <exe/futures/combine/seq/or_else.hpp>
-#include <exe/futures/combine/seq/map.hpp>
 #include <exe/futures/combine/seq/via.hpp>
 #include <exe/futures/combine/seq/flatten.hpp>
-#include <exe/futures/combine/seq/visit.hpp>
 
 #include <exe/futures/combine/par/all.hpp>
 #include <exe/futures/combine/par/first.hpp>
@@ -22,8 +21,8 @@
 #include <exe/futures/syntax/both.hpp>
 #include <exe/futures/syntax/or.hpp>
 
-#include <exe/result/make/value.hpp>
-#include <exe/result/make/error.hpp>
+#include <exe/result/make/ok.hpp>
+#include <exe/result/make/err.hpp>
 
 #include <wheels/core/panic.hpp>
 
@@ -64,7 +63,7 @@ int main() {
 
     auto timeout = std::make_error_code(std::errc::timed_out);
 
-    auto r = futures::Error<int>(timeout) | futures::Get();
+    auto r = futures::Fail<int>(timeout) | futures::Get();
 
     if (!r) {
       fmt::println("Failure -> {}", *r);
@@ -77,7 +76,7 @@ int main() {
     auto r = futures::Submit(pool,
                              []() {
                                fmt::println("Running on thread pool");
-                               return result::Value(7);
+                               return result::Ok(7);
                              }) |
              futures::Get();
 
@@ -90,7 +89,7 @@ int main() {
     auto r = futures::Submit(pool,
                              []() {
                                fmt::println("Running on thread pool");
-                               return result::Value(1);
+                               return result::Ok(1);
                              }) |
              futures::Map([](int v) {
                return v + 1;
@@ -101,11 +100,18 @@ int main() {
   }
 
   {
+    // Forget
+
+    futures::Just() | futures::Map([](wheels::Unit) {
+      fmt::println("Just");
+    }) | futures::Forget();
+  }
+
+  {
     // AndThen / OrElse
 
-    auto r = futures::Value(1) |
-             futures::AndThen([](int) -> Result<int> {
-               return result::Error(Timeout());
+    auto r = futures::Value(1) | futures::AndThen([](int) -> Result<int> {
+               return result::Err(Timeout());
              }) |
              futures::AndThen([](int) -> Result<int> {
                wheels::Panic("Should be skipped");
@@ -122,12 +128,13 @@ int main() {
   {
     // Flatten
 
-    futures::Future<int> f = futures::Submit(pool, [&] {
-      return result::Value(
-          futures::Submit(pool, [] {
-            return result::Value(7);
-          }));
-    }) |
+    futures::Future<int> f =
+        futures::Submit(pool,
+                        [&] {
+                          return result::Ok(futures::Submit(pool, [] {
+                            return result::Ok(7);
+                          }));
+                        }) |
         futures::Flatten();
 
     auto r = std::move(f) | futures::Get();
@@ -139,10 +146,11 @@ int main() {
     // FirstOf
 
     auto f = futures::Submit(pool, [] {
-      return result::Value(1);
+      return result::Ok(1);
     });
+
     auto g = futures::Submit(pool, [] {
-      return result::Value(2);
+      return result::Ok(2);
     });
 
     auto r = (std::move(f) or std::move(g)) | futures::Get();

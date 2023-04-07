@@ -8,13 +8,13 @@ namespace exe::result {
  * Usage:
  *
  * futures::Value(1) | futures::AndThen([](int v) {
- *   return result::Value(v + 1);
+ *   return result::Ok(v + 1);
  * })
  *
  */
 
 template <typename T>
-Result<T> Value(T value) {
+Result<T> Ok(T value) {
   return {std::move(value)};
 }
 

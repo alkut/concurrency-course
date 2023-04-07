@@ -7,13 +7,13 @@ namespace exe::result {
 /*
  * Usage:
  *
- * futures::Value(1) | futures::AndThen([](int v) -> Result<int> {
- *   return result::Error(Timeout());
- * })
+ * futures::Just() | futures::AndThen([](Unit) -> Result<int> {
+ *   return result::Err(Timeout());
+ * });
  *
  */
 
-inline auto Error(std::error_code ec) {
+inline auto Err(std::error_code ec) {
   return tl::unexpected(ec);
 }
 

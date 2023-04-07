@@ -1,7 +1,8 @@
 #pragma once
 
-#include <exe/result/types/result.hpp>
 #include <exe/futures/types/future.hpp>
+
+#include <exe/result/types/result.hpp>
 
 #include <tuple>
 
@@ -18,7 +19,7 @@ class Promise {
     // Not implemented
   }
 
-  void SetError(std::error_code) {
+  void SetError(Error) {
     // Not implemented
   }
 };

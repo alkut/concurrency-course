@@ -2,13 +2,13 @@
 
 #include <tl/expected.hpp>
 
-#include <system_error>
+#include <exe/result/types/error.hpp>
 
 namespace exe {
 
 // https://github.com/TartanLlama/expected
 
 template <typename T>
-using Result = tl::expected<T, std::error_code>;
+using Result = tl::expected<T, Error>;
 
 }  // namespace exe
