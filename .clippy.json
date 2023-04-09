@@ -54,6 +54,15 @@
     },
     {
       "patterns": [
+        "WakeOne(twist::ed::futex::PrepareWake",
+        "WakeAll(twist::ed::futex::PrepareWake",
+        "WakeOne(twist::ed::PrepareWake",
+        "WakeAll(twist::ed::PrepareWake"
+      ],
+      "hint": "PrepareWake call should be made before the shared state change (See https://gitlab.com/Lipovsky/twist/-/blob/master/docs/ru/guide.md#futex)"
+    },
+    {
+      "patterns": [
         "<twist/rt/",
         "twist::rt::"
       ],
