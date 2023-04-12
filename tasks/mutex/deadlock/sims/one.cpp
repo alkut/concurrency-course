@@ -13,7 +13,12 @@ void OneFiberDeadLock() {
   Mutex mutex;
 
   auto fiber = [&] {
-    // I am a Fiber
+    mutex.Lock();
+    tf::Spawn([&] {
+      mutex.Lock();
+      mutex.Unlock();
+    }).Join();
+    mutex.Unlock();
   };
 
   Spawn(fiber).Join();

@@ -21,11 +21,19 @@ void TwoFibersDeadLock() {
   // Fibers
 
   auto first = [&] {
-    // I am a Fiber
+    a.Lock();
+    tf::Yield();
+    b.Lock();
+    b.Unlock();
+    a.Unlock();
   };
 
   auto second = [&] {
-    // I am a Fiber
+    b.Lock();
+    tf::Yield();
+    a.Lock();
+    a.Unlock();
+    b.Unlock();
   };
 
   // No deadlock with one fiber
